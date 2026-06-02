@@ -11,5 +11,6 @@ func (s *Service) CreateEmployee(ctx context.Context, name string, position stri
 	if err != nil {
 		return model.Employee{}, err
 	}
+
 	return s.repo.CreateEmployee(ctx, name, position, depID, hiredAt)
 }

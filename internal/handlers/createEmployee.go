@@ -2,10 +2,11 @@ package handler
 
 import (
 	"encoding/json"
+	"errors"
 	"net/http"
+	appErrors "orgService/internal/errors"
 	"orgService/internal/model"
 	"strconv"
-	"strings"
 )
 
 func (h *Handler) createEmployee(w http.ResponseWriter, r *http.Request) {
@@ -18,13 +19,7 @@ func (h *Handler) createEmployee(w http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 
-	department, ok := strings.CutPrefix(r.URL.Path, "/departments/")
-	department, ok = strings.CutSuffix(department, "/employees")
-
-	if !ok {
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
+	department := r.PathValue("id")
 
 	depID, err := strconv.Atoi(department)
 	if err != nil {
@@ -33,5 +28,26 @@ func (h *Handler) createEmployee(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	h.service.CreateEmployee(r.Context(), emp.FullName, emp.Position, depID, emp.HiredAt)
+	emp, err = h.service.CreateEmployee(r.Context(), emp.FullName, emp.Position, depID, emp.HiredAt)
+	if err != nil {
+		switch {
+		case errors.Is(err, appErrors.ErrInvalidDepartmentNumber):
+			http.Error(w, err.Error(), http.StatusNotFound)
+		case errors.Is(err, appErrors.ErrInvalidFieldLength):
+			http.Error(w, err.Error(), http.StatusBadRequest)
+		case errors.Is(err, appErrors.ErrInvalidTime):
+			http.Error(w, err.Error(), http.StatusBadRequest)
+		default:
+			w.WriteHeader(http.StatusInternalServerError)
+		}
+		return
+	}
+
+	empJSON, err := json.Marshal(emp)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+	w.Write(empJSON)
 }

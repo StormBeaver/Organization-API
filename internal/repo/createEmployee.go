@@ -13,7 +13,7 @@ func (r *repo) CreateEmployee(ctx context.Context, name string, position string,
 		Position:     position,
 		HiredAt:      hiredAt,
 	}
-	res := r.db.WithContext(ctx).Model(model.Employee{}).Create(employee) // проверить работоспособность т.к. на сайте db.Select("Name", "Age", "CreatedAt").Create(&user)
+	res := r.db.WithContext(ctx).Model(model.Employee{}).Create(&employee)
 
 	if res.Error != nil {
 		return employee, res.Error
