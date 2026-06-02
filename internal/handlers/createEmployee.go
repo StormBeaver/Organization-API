@@ -28,14 +28,13 @@ func (h *Handler) createEmployee(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	emp, err = h.service.CreateEmployee(r.Context(), emp.FullName, emp.Position, depID, emp.HiredAt)
+	res, err := h.service.CreateEmployee(r.Context(), emp.FullName, emp.Position, depID, emp.HiredAt)
 	if err != nil {
 		switch {
 		case errors.Is(err, appErrors.ErrInvalidDepartmentNumber):
 			http.Error(w, err.Error(), http.StatusNotFound)
-		case errors.Is(err, appErrors.ErrInvalidFieldLength):
-			http.Error(w, err.Error(), http.StatusBadRequest)
-		case errors.Is(err, appErrors.ErrInvalidTime):
+		case errors.Is(err, appErrors.ErrInvalidFieldLength) ||
+			errors.Is(err, appErrors.ErrInvalidTime):
 			http.Error(w, err.Error(), http.StatusBadRequest)
 		default:
 			w.WriteHeader(http.StatusInternalServerError)
@@ -43,11 +42,11 @@ func (h *Handler) createEmployee(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	empJSON, err := json.Marshal(emp)
+	resJSON, err := json.Marshal(res)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 	w.WriteHeader(http.StatusOK)
-	w.Write(empJSON)
+	w.Write(resJSON)
 }

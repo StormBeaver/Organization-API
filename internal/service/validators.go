@@ -36,13 +36,13 @@ func (s *Service) validateCreateDepartment(ctx context.Context, name string, par
 func (s *Service) validateCreateEmployee(ctx context.Context, name, position string, depID int, hiredAt *time.Time) error {
 	err := validateFieldLength(name)
 	if err != nil {
-		s.logger.Err(appErrors.ErrInvalidFieldLength).Msg("name too long")
+		s.logger.Err(appErrors.ErrInvalidFieldLength).Msg("invalid name length")
 		return fmt.Errorf("name invalid: %w", appErrors.ErrInvalidFieldLength)
 	}
 
 	err = validateFieldLength(position)
 	if err != nil {
-		s.logger.Err(appErrors.ErrInvalidFieldLength).Msg("name too long")
+		s.logger.Err(appErrors.ErrInvalidFieldLength).Msg("invalid position length")
 		return fmt.Errorf("position invalid: %w", appErrors.ErrInvalidFieldLength)
 	}
 
@@ -50,7 +50,7 @@ func (s *Service) validateCreateEmployee(ctx context.Context, name, position str
 		return appErrors.ErrInvalidTime
 	}
 
-	_, _, err = s.GetDepartment(ctx, 1, false)
+	_, _, err = s.GetDepartment(ctx, depID, 1, false)
 	if err != nil {
 		s.logger.Err(appErrors.ErrInvalidDepartmentNumber).Msg("department doesn't exist")
 		return fmt.Errorf("department doesn't exist: %w", appErrors.ErrInvalidDepartmentNumber)

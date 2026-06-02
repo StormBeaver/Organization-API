@@ -8,6 +8,7 @@ import (
 	"orgService/internal/model"
 )
 
+// добавь проверку на уникальность имени в родителе
 func (h *Handler) createDepartment(w http.ResponseWriter, r *http.Request) {
 	var dep model.Department
 
@@ -20,12 +21,11 @@ func (h *Handler) createDepartment(w http.ResponseWriter, r *http.Request) {
 
 	h.logger.Debug().Msgf("name: %s, parent_id: %v", dep.Name, dep.ID)
 
-	res, err := h.service.CreateDepartment(r.Context(), dep.Name, dep.ParentID)
+	res, err := h.service.CreateDepartment(r.Context(), *dep.Name, dep.ParentID)
 	if err != nil {
 		switch {
-		case errors.Is(err, appErrors.ErrInvalidDepartmentNumber):
-			http.Error(w, err.Error(), http.StatusBadRequest)
-		case errors.Is(err, appErrors.ErrInvalidFieldLength):
+		case errors.Is(err, appErrors.ErrInvalidDepartmentNumber) ||
+			errors.Is(err, appErrors.ErrInvalidFieldLength):
 			http.Error(w, err.Error(), http.StatusBadRequest)
 		default:
 			w.WriteHeader(http.StatusInternalServerError)

@@ -5,7 +5,7 @@ import (
 	"errors"
 )
 
-func (r *repo) DeleteDepartment(ctx context.Context, ID int, mode string, reasignDestination *int) error {
+func (r *repo) DeleteDepartment(ctx context.Context, id int, mode string, reasignDestination *int) error {
 	switch mode {
 	case "cascade":
 	case "reassign":

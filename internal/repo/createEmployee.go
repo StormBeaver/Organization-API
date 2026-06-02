@@ -2,6 +2,7 @@ package repo
 
 import (
 	"context"
+	"fmt"
 	"orgService/internal/model"
 	"time"
 )
@@ -16,7 +17,7 @@ func (r *repo) CreateEmployee(ctx context.Context, name string, position string,
 	res := r.db.WithContext(ctx).Model(model.Employee{}).Create(&employee)
 
 	if res.Error != nil {
-		return employee, res.Error
+		return model.Employee{}, fmt.Errorf("gorm create employee: %w", res.Error)
 	}
 
 	return employee, nil
