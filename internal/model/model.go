@@ -6,9 +6,11 @@ type Department struct {
 	Id   int     `gorm:"primary_key;column:id;type:bigserial;not null" json:"id"`
 	Name *string `gorm:"column:name;type:text;not null" json:"name"`
 
-	ParentId *int        `json:"parent_id"`
-	Parent   *Department `gorm:"references:id" json:"-"`
-	// Children  *Department
+	ParentID  *int         `json:"parent_id"`
+	Parent    *Department  `gorm:"foreignKey:ParentID;references:Id" json:"-"`
+	Children  []Department `gorm:"foreignKey:ParentID;references:Id" json:"children,omitempty"`
+	Employees []Employee   `gorm:"foreignKey:DepartmentID;references:id" json:"employees,omitempty"`
+
 	CreatedAt time.Time `gorm:"column:created_at;type:datetime;not null;default:now()" json:"created_at"`
 }
 
@@ -19,8 +21,8 @@ func (d Department) TableName() string {
 type Employee struct {
 	Id int `gorm:"primary_key;column:id;type:bigserial;not null" json:"id"`
 
-	DepartmentId int         `json:"department_id"`
-	Department   *Department `gorm:"references:id" json:"-"`
+	DepartmentID int         `json:"department_id"`
+	Department   *Department `gorm:"foreignKey:DepartmentID;references:id" json:"-"`
 
 	FullName  string     `gorm:"column:full_name;type:text;not null" json:"full_name"`
 	Position  string     `gorm:"column:position;type:text" json:"position"`
@@ -30,4 +32,9 @@ type Employee struct {
 
 func (e Employee) TableName() string {
 	return "employee"
+}
+
+type GetParams struct {
+	Depth            int
+	IncludeEmployees bool
 }

@@ -36,6 +36,11 @@ type DeleteDepartmentRequest struct {
 	ToDepartment *int
 }
 
+type GetDepartmentRequest struct {
+	Depth            int  `json:"depth"`
+	IncludeEmployees bool `json:"include_employees"`
+}
+
 func ParseDeleteMode(mode string) (DeleteMode, error) {
 	switch mode {
 	case "cascade":

@@ -12,7 +12,7 @@ import (
 type Service interface {
 	CreateDepartment(ctx context.Context, request dto.CreateDepartmentRequest) (*model.Department, error)
 	CreateEmployee(ctx context.Context, request dto.CreateEmployeeRequest) (*model.Employee, error)
-	GetDepartment(ctx context.Context, id int) (*model.Department, error)
+	GetDepartmentWithDepth(ctx context.Context, id int, request dto.GetDepartmentRequest) (*model.Department, error)
 	PatchDepartment(ctx context.Context, request dto.PatchDepartmentRequest) (*model.Department, error)
 	DeleteDepartment(ctx context.Context, request dto.DeleteDepartmentRequest) error
 }

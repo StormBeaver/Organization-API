@@ -20,7 +20,6 @@ func (h *Handler) patchDepartment(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 
 	req.Id, err = strconv.Atoi(r.PathValue("id"))
-
 	if err != nil {
 		http.Error(w, "wrong type of department", http.StatusBadRequest)
 	}

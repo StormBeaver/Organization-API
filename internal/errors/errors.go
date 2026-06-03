@@ -8,4 +8,5 @@ var (
 	ErrInvalidTime             error = errors.New("detected time travel!")
 	ErrInvalidArguments        error = errors.New("invalid arguments")
 	ErrInvalidMode             error = errors.New("invalid mode")
+	ErrInvalidDepth            error = errors.New("invalid depth value")
 )
