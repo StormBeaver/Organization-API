@@ -5,23 +5,23 @@ import (
 	"errors"
 	"net/http"
 	appErrors "orgService/internal/errors"
-	"orgService/internal/model"
+	"orgService/internal/handlers/dto"
 )
 
 // добавь проверку на уникальность имени в родителе
 func (h *Handler) createDepartment(w http.ResponseWriter, r *http.Request) {
-	var dep model.Department
+	var req dto.CreateDepartmentRequest
 
-	err := json.NewDecoder(r.Body).Decode(&dep)
+	err := json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
 		http.Error(w, "Bad JSON", http.StatusBadRequest)
 		return
 	}
 	defer r.Body.Close()
 
-	h.logger.Debug().Msgf("name: %s, parent_id: %v", dep.Name, dep.ID)
+	h.logger.Debug().Msgf("name: %s, parent_id: %v", req.Name, req.ParentID)
 
-	res, err := h.service.CreateDepartment(r.Context(), *dep.Name, dep.ParentID)
+	res, err := h.service.CreateDepartment(r.Context(), req)
 	if err != nil {
 		switch {
 		case errors.Is(err, appErrors.ErrInvalidDepartmentNumber) ||
