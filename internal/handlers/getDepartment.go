@@ -40,7 +40,7 @@ func (h *Handler) getDepartment(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	resJSON, err := json.MarshalIndent(res, " ", "   ")
+	resJSON, err := json.Marshal(res)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
