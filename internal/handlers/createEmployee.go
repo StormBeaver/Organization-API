@@ -5,30 +5,28 @@ import (
 	"errors"
 	"net/http"
 	appErrors "orgService/internal/errors"
-	"orgService/internal/model"
+	"orgService/internal/handlers/dto"
 	"strconv"
 )
 
 func (h *Handler) createEmployee(w http.ResponseWriter, r *http.Request) {
-	var emp model.Employee
+	var req dto.CreateEmployeeRequest
 
-	err := json.NewDecoder(r.Body).Decode(&emp)
+	err := json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
 		http.Error(w, "Bad JSON", http.StatusBadRequest)
 		return
 	}
 	defer r.Body.Close()
 
-	department := r.PathValue("id")
-
-	depID, err := strconv.Atoi(department)
+	req.DepartmentID, err = strconv.Atoi(r.PathValue("id"))
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte("wront type of department"))
 		return
 	}
 
-	res, err := h.service.CreateEmployee(r.Context(), emp.FullName, emp.Position, depID, emp.HiredAt)
+	res, err := h.service.CreateEmployee(r.Context(), req)
 	if err != nil {
 		switch {
 		case errors.Is(err, appErrors.ErrInvalidDepartmentNumber):

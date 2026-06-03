@@ -4,20 +4,14 @@ import (
 	"context"
 	"fmt"
 	"orgService/internal/model"
-	"time"
 )
 
-func (r *repo) CreateEmployee(ctx context.Context, name string, position string, depID int, hiredAt *time.Time) (model.Employee, error) {
-	employee := model.Employee{
-		DepartmentID: depID,
-		FullName:     name,
-		Position:     position,
-		HiredAt:      hiredAt,
-	}
+func (r *repo) CreateEmployee(ctx context.Context, employee *model.Employee) (*model.Employee, error) {
+
 	res := r.db.WithContext(ctx).Model(model.Employee{}).Create(&employee)
 
 	if res.Error != nil {
-		return model.Employee{}, fmt.Errorf("gorm create employee: %w", res.Error)
+		return nil, fmt.Errorf("gorm create employee: %w", res.Error)
 	}
 
 	return employee, nil
