@@ -25,7 +25,7 @@ API описан в `internal\handlers\handler.go`, предоставляет C
 
 ## Docker
 
-Описан докерфайл для образа HTTP-server'а
+Описаны докерфайлы для образов HTTP-server'а и мигратора.
 
 ## Makefile
 
