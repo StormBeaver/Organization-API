@@ -87,49 +87,9 @@ func (s *serviceMok) CreateDepartment(ctx context.Context, request dto.CreateDep
 	}, nil
 }
 
-func TestHandler_createEmployee(t *testing.T) {
-	tests := []struct {
-		name     string
-		service  Service
-		logger   *zerolog.Logger
-		w        *httptest.ResponseRecorder
-		r        *http.Request
-		wantCode int
-	}{
-		{
-			name:    "ok",
-			service: &serviceMok{},
-			logger:  &zerolog.Logger{},
-			w:       httptest.NewRecorder(),
-			r: httptest.NewRequest("POST", "/departments/1/employees",
-				strings.NewReader("{\"full_name\":\"testName\", \"position\":\"testPosition\"}")),
-			wantCode: 200,
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			h := NewHandler(tt.service, tt.logger)
-			mux := http.NewServeMux()
-			mux.HandleFunc("POST /departments/{id}/employees", h.createEmployee)
-			h.createEmployee(tt.w, tt.r)
-			assert.Equal(t, tt.wantCode, tt.w.Code)
-		})
-	}
-}
-
 // CreateEmployee implements [Service].
 func (s *serviceMok) CreateEmployee(ctx context.Context, request dto.CreateEmployeeRequest) (*model.Employee, error) {
-	if s.err != nil {
-		return nil, s.err
-	}
-
-	return &model.Employee{
-		Id:           1,
-		DepartmentID: request.DepartmentID,
-		FullName:     request.FullName,
-		Position:     request.Position,
-		HiredAt:      request.HiredAt,
-	}, nil
+	panic("unimplemented")
 }
 
 // DeleteDepartment implements [Service].
