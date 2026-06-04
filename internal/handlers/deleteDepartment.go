@@ -33,6 +33,7 @@ func (h *Handler) deleteDepartment(w http.ResponseWriter, r *http.Request) {
 
 	err = h.service.DeleteDepartment(r.Context(), req)
 	if err != nil {
+		h.logger.Err(err).Send()
 		switch {
 		case errors.Is(err, appErrors.ErrInvalidDepartmentNumber):
 			http.Error(w, err.Error(), http.StatusBadRequest)

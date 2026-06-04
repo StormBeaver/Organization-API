@@ -31,6 +31,7 @@ func (h *Handler) getDepartment(w http.ResponseWriter, r *http.Request) {
 
 	res, err := h.service.GetDepartmentWithDepth(r.Context(), id, req)
 	if err != nil {
+		h.logger.Err(err).Send()
 		switch {
 		case errors.Is(err, appErrors.ErrInvalidDepth):
 			http.Error(w, err.Error(), http.StatusBadRequest)
@@ -42,6 +43,7 @@ func (h *Handler) getDepartment(w http.ResponseWriter, r *http.Request) {
 
 	resJSON, err := json.Marshal(res)
 	if err != nil {
+		h.logger.Err(err).Send()
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}

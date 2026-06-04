@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"orgService/internal/handlers/dto"
 	"orgService/internal/model"
+	"time"
 
 	"github.com/rs/zerolog"
 )
@@ -38,5 +39,18 @@ func (h *Handler) Handler() http.Handler {
 	mux.HandleFunc("PATCH /departments/{id}", h.patchDepartment)
 	mux.HandleFunc("DELETE /departments/{id}", h.deleteDepartment)
 
-	return mux
+	return h.loggingMiddleware(mux)
+}
+
+func (h *Handler) loggingMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		start := time.Now()
+
+		next.ServeHTTP(w, r)
+
+		h.logger.Debug().
+			Str("Method", r.Method).
+			Str("Path", r.URL.Path).
+			Dur("Duration", time.Since(start)).Send()
+	})
 }

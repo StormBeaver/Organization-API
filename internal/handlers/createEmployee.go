@@ -27,6 +27,7 @@ func (h *Handler) createEmployee(w http.ResponseWriter, r *http.Request) {
 
 	res, err := h.service.CreateEmployee(r.Context(), req)
 	if err != nil {
+		h.logger.Err(err).Send()
 		switch {
 		case errors.Is(err, appErrors.ErrInvalidDepartmentNumber):
 			http.Error(w, err.Error(), http.StatusNotFound)
@@ -41,6 +42,7 @@ func (h *Handler) createEmployee(w http.ResponseWriter, r *http.Request) {
 
 	resJSON, err := json.Marshal(res)
 	if err != nil {
+		h.logger.Err(err).Send()
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
